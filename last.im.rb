@@ -45,7 +45,7 @@ class LastIM < Uppercut::Agent
   end
 end
 
-Daemons.call do
+Daemons.run_proc(__FILE__) do
   LastIM.new
   sleep
 end
