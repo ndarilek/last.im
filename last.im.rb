@@ -1,11 +1,15 @@
+#!/usr/bin/env ruby
+
 require "yaml"
 $: << File.dirname(__FILE__)+"/lib"
 require "uppercut"
+require "rubygems"
+require "daemons"
 
 class LastIM < Uppercut::Agent
   def initialize(cfgdir = nil)
     @cfgdir = cfgdir
-    @cfgdir ||= File.dirname(__FILE__)+"/.lastim/"
+    @cfgdir ||= ENV["HOME"]+"/.lastim/"
     Dir.mkdir(@cfgdir) unless File.exist?(@cfgdir)
     begin
       @credentials = YAML::load(File.read(@cfgdir+"/credentials.yml"))
@@ -18,15 +22,7 @@ class LastIM < Uppercut::Agent
     super(@credentials["user"]+"/main", @credentials["password"], :listen => true)
   end
 
-  def join
-    @listen_thread.join
-  end
-
-  def signup(conversation)
-  end
-
   def authenticate(conversation, user, password)
-    debugger
     puts "Here"
   end
 
@@ -49,4 +45,8 @@ class LastIM < Uppercut::Agent
   end
 end
 
-LastIM.new.join
+Daemons.call do
+  LastIM.new
+  sleep
+end
+
