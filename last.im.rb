@@ -5,11 +5,21 @@ $: << File.dirname(__FILE__)+"/lib"
 require "uppercut"
 require "rubygems"
 require "daemons"
+require "dm-core"
+require "do_sqlite3"
+
+class User
+  include DataMapper::Resource
+
+  property :id, String, :key => true, :nullable => false
+  property :username, String, :nullable => false
+  property :password, String, :nullable => false
+end
 
 class LastIM < Uppercut::Agent
   def initialize(cfgdir = nil)
     @cfgdir = cfgdir
-    @cfgdir ||= ENV["HOME"]+"/.lastim/"
+    @cfgdir ||= ENV["HOME"]+"/.last.im/"
     Dir.mkdir(@cfgdir) unless File.exist?(@cfgdir)
     begin
       @credentials = YAML::load(File.read(@cfgdir+"/credentials.yml"))
@@ -19,6 +29,8 @@ class LastIM < Uppercut::Agent
       puts "password: <jabber password>"
       exit(1)
     end
+    DataMapper.setup(:default, "sqlite3://#{@cfgdir}/users.dat")
+    DataMapper.auto_upgrade!
     super(@credentials["user"]+"/main", @credentials["password"], :listen => true)
   end
 
