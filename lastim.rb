@@ -2,15 +2,6 @@ require "yaml"
 $: << File.dirname(__FILE__)+"/lib"
 require "uppercut"
 
-Thread.abort_on_exception = true
-
-class BasicNotifier < Uppercut::Notifier
-  notifier :basic do |n,data|
-    n.to 'tyler@codehallow.com'
-    n.send 'Hey kid.'
-  end
-end
-
 class LastIM < Uppercut::Agent
   def initialize(cfgdir = nil)
     @cfgdir = cfgdir
