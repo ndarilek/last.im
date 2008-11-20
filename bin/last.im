@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+require "rubygems"
+$: << File.dirname(__FILE__)+"/../lib"
+require "last.im"
+require "daemons"
+
+Daemons.run_proc(__FILE__) do
+  LastIM.new
+  sleep
+end
+

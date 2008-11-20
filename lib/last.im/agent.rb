@@ -1,20 +1,5 @@
-#!/usr/bin/env ruby
-
-require "yaml"
-$: << File.dirname(__FILE__)+"/lib"
 require "uppercut"
-require "rubygems"
-require "daemons"
-require "dm-core"
-require "do_sqlite3"
-
-class User
-  include DataMapper::Resource
-
-  property :id, String, :key => true, :nullable => false
-  property :username, String, :nullable => false
-  property :password, String, :nullable => false
-end
+require "yaml"
 
 class LastIM < Uppercut::Agent
   def initialize(cfgdir = nil)
@@ -55,10 +40,5 @@ class LastIM < Uppercut::Agent
   on :unsubscribe do |conversation|
     conversation.send "Sorry to see you go. Your last.fm credentials have been deleted."
   end
-end
-
-Daemons.run_proc(__FILE__) do
-  LastIM.new
-  sleep
 end
 
